@@ -27,6 +27,7 @@ namespace Squirrel
                 Action<int> progress = null,
                 IFileDownloader urlDownloader = null)
             {
+                File.Create(@"C:\Users\Paul\AppData\Local\SquirrelTemp\foo.txt");
                 progress = progress ?? (_ => { });
 
                 var localReleases = Enumerable.Empty<ReleaseEntry>();
@@ -41,7 +42,7 @@ namespace Squirrel
                     shouldInitialize = true;
                 }
 
-                if (shouldInitialize) await initializeClientAppDirectory();
+                if (shouldInitialize) await initializeClientAppDirectory(localReleaseFile);
 
                 string releaseFile;
 
@@ -84,7 +85,8 @@ namespace Squirrel
                     }
 
                     progress(33);
-                } else {
+                }
+                else {
                     this.Log().Info("Reading RELEASES file from {0}", updateUrlOrPath);
 
                     if (!Directory.Exists(updateUrlOrPath)) {
@@ -131,7 +133,7 @@ namespace Squirrel
                 return ret;
             }
 
-            async Task initializeClientAppDirectory()
+            async Task initializeClientAppDirectory(string localReleaseFile)
             {
                 // On bootstrap, we won't have any of our directories, create them
                 var pkgDir = Path.Combine(rootAppDirectory, "packages");
@@ -140,6 +142,7 @@ namespace Squirrel
                 }
 
                 Directory.CreateDirectory(pkgDir);
+                File.Create(localReleaseFile).Dispose();
             }
 
             UpdateInfo determineUpdateInfo(IEnumerable<ReleaseEntry> localReleases, IEnumerable<ReleaseEntry> remoteReleases, bool ignoreDeltaUpdates)
@@ -158,7 +161,7 @@ namespace Squirrel
                 if (latestFullRelease == currentRelease) {
                     this.Log().Info("No updates, remote and local are the same");
 
-                    var info = UpdateInfo.Create(currentRelease, new[] {latestFullRelease}, packageDirectory);
+                    var info = UpdateInfo.Create(currentRelease, new[] { latestFullRelease }, packageDirectory);
                     return info;
                 }
 
@@ -168,12 +171,12 @@ namespace Squirrel
 
                 if (!localReleases.Any()) {
                     this.Log().Warn("First run or local directory is corrupt, starting from scratch");
-                    return UpdateInfo.Create(null, new[] {latestFullRelease}, packageDirectory);
+                    return UpdateInfo.Create(null, new[] { latestFullRelease }, packageDirectory);
                 }
 
                 if (localReleases.Max(x => x.Version) > remoteReleases.Max(x => x.Version)) {
                     this.Log().Warn("hwhat, local version is greater than remote version");
-                    return UpdateInfo.Create(Utility.FindCurrentVersion(localReleases), new[] {latestFullRelease}, packageDirectory);
+                    return UpdateInfo.Create(Utility.FindCurrentVersion(localReleases), new[] { latestFullRelease }, packageDirectory);
                 }
 
                 return UpdateInfo.Create(currentRelease, remoteReleases, packageDirectory);
