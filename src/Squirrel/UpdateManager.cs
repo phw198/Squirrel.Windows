@@ -57,6 +57,12 @@ namespace Squirrel
             return await checkForUpdate.CheckForUpdate(Utility.LocalReleaseFileForAppDir(rootAppDirectory), updateUrlOrPath, ignoreDeltaUpdates, progress, urlDownloader);
         }
 
+        public bool CheckIfAlreadyDownloaded(ReleaseEntry releaseEntry, string targetFile) {
+            var downloadReleases = new DownloadReleasesImpl(rootAppDirectory);
+
+            return downloadReleases.CheckIfAlreadyDownloaded(releaseEntry, targetFile);
+        }
+
         public async Task DownloadReleases(IEnumerable<ReleaseEntry> releasesToDownload, Action<int> progress = null)
         {
             var downloadReleases = new DownloadReleasesImpl(rootAppDirectory);

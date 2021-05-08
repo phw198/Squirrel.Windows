@@ -27,7 +27,6 @@ namespace Squirrel
                 Action<int> progress = null,
                 IFileDownloader urlDownloader = null)
             {
-                File.Create(@"C:\Users\Paul\AppData\Local\SquirrelTemp\foo.txt");
                 progress = progress ?? (_ => { });
 
                 var localReleases = Enumerable.Empty<ReleaseEntry>();

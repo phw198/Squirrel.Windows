@@ -66,7 +66,7 @@ namespace Squirrel
                 }
             }
 
-            private bool CheckIfAlreadyDownloaded(ReleaseEntry releaseEntry, string targetFile)
+            public bool CheckIfAlreadyDownloaded(ReleaseEntry releaseEntry, string targetFile)
             {
                 if (!File.Exists(targetFile))
                     return false;

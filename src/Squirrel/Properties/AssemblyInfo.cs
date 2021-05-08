@@ -21,3 +21,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Update")]
 [assembly: InternalsVisibleTo("Update-Mono")]
 [assembly: InternalsVisibleTo("SyncReleases")]
+[assembly: AssemblyFileVersion("1.9.0.1")]
